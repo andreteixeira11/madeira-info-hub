@@ -52,6 +52,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				government: {
+					blue: 'hsl(var(--government-blue))',
+					dark: 'hsl(var(--government-dark))',
+					light: 'hsl(var(--government-light))',
+					accent: 'hsl(var(--government-accent))',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -89,6 +95,14 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'gradient-government': 'var(--gradient-government)',
+				'gradient-subtle': 'var(--gradient-subtle)',
+			},
+			boxShadow: {
+				'government': 'var(--shadow-government)',
+				'card-soft': 'var(--shadow-card)',
 			}
 		}
 	},
