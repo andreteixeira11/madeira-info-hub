@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
 import { StatsCards } from "@/components/StatsCards";
 import { InformationGrid } from "@/components/InformationGrid";
-import { Button } from "@/components/ui/button";
-import { Plus, Database } from "lucide-react";
+import { NewRecordModal } from "@/components/NewRecordModal";
+import { Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -13,8 +13,11 @@ const Index = () => {
     concelho: "Todos os Concelhos",
     freguesia: "all",
     area: "Todas as Áreas",
+    secretaria: "Todas as Secretarias",
     search: ""
   });
+
+  const [records, setRecords] = useState([]);
 
   const handleViewRecord = (id: string) => {
     toast({
@@ -30,11 +33,16 @@ const Index = () => {
     });
   };
 
-  const handleAddRecord = () => {
-    toast({
-      title: "Funcionalidade em Desenvolvimento",
-      description: "A funcionalidade de adicionar registos estará disponível em breve.",
-    });
+  const handleAddRecord = (newRecord: any) => {
+    const recordWithId = {
+      ...newRecord,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      status: "ativo" as const
+    };
+    
+    setRecords(prev => [recordWithId, ...prev]);
   };
 
   return (
@@ -54,13 +62,7 @@ const Index = () => {
                 </p>
               </div>
             </div>
-            <Button 
-              onClick={handleAddRecord}
-              className="bg-white text-primary hover:bg-blue-50"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Registo
-            </Button>
+            <NewRecordModal onAddRecord={handleAddRecord} />
           </div>
         </div>
       </header>
@@ -69,10 +71,10 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Statistics Cards */}
         <StatsCards 
-          totalRecords={1247}
-          totalAssessors={28}
+          totalRecords={1847}
+          totalAssessors={34}
           totalConcelhos={11}
-          monthlyGrowth={12}
+          monthlyGrowth={15}
         />
 
         {/* Filters */}
@@ -81,11 +83,13 @@ const Index = () => {
           onConcelhoChange={(concelho) => setFilters(prev => ({ ...prev, concelho }))}
           onFreguesiaChange={(freguesia) => setFilters(prev => ({ ...prev, freguesia }))}
           onAreaChange={(area) => setFilters(prev => ({ ...prev, area }))}
+          onSecretariaChange={(secretaria) => setFilters(prev => ({ ...prev, secretaria }))}
           onSearchChange={(search) => setFilters(prev => ({ ...prev, search }))}
           selectedYear={filters.year}
           selectedConcelho={filters.concelho}
           selectedFreguesia={filters.freguesia}
           selectedArea={filters.area}
+          selectedSecretaria={filters.secretaria}
           searchTerm={filters.search}
         />
 
@@ -96,19 +100,19 @@ const Index = () => {
               Informações Registadas
             </h2>
             <p className="text-muted-foreground">
-              {filters.search || filters.year !== "all" || filters.concelho !== "Todos os Concelhos" || filters.area !== "Todas as Áreas" 
+              {filters.search || filters.year !== "all" || filters.concelho !== "Todos os Concelhos" || filters.area !== "Todas as Áreas" || filters.secretaria !== "Todas as Secretarias"
                 ? "Resultados filtrados" 
                 : "Todas as informações disponíveis"}
             </p>
           </div>
           <div className="text-sm text-muted-foreground">
-            4 registos encontrados
+            {records.length + 6} registos encontrados
           </div>
         </div>
 
         {/* Information Grid */}
         <InformationGrid 
-          records={[]} // Will use mock data from component
+          records={records}
           onViewRecord={handleViewRecord}
           onDownloadRecord={handleDownloadRecord}
         />

@@ -26,12 +26,12 @@ interface InformationGridProps {
 const mockRecords: InformationRecord[] = [
   {
     id: "1",
-    title: "Projeto de Requalificação Urbana do Centro do Funchal",
-    description: "Plano detalhado para renovação das infraestruturas urbanas na zona histórica da cidade",
+    title: "Construção de 45km de Novas Estradas Regionais",
+    description: "Projeto de expansão da rede viária regional incluindo a construção de 45 quilómetros de novas estradas, beneficiando diretamente 12 freguesias e melhorando a conectividade entre concelhos.",
     area: "Infraestruturas",
     concelho: "Funchal",
-    freguesia: "Sé",
-    assessor: "Maria Silva",
+    freguesia: "Monte",
+    assessor: "Eng. Maria Silva",
     secretaria: "Secretaria Regional das Infraestruturas",
     createdAt: "2024-01-15",
     updatedAt: "2024-01-20",
@@ -39,41 +39,67 @@ const mockRecords: InformationRecord[] = [
   },
   {
     id: "2", 
-    title: "Programa de Apoio à Agricultura Familiar",
-    description: "Iniciativa de suporte aos pequenos produtores agrícolas da região com subsídios e formação",
-    area: "Agricultura e Pescas",
+    title: "Reabilitação de 280 Habitações Sociais",
+    description: "Programa abrangente de reabilitação de habitações sociais, incluindo melhorias na eficiência energética, acessibilidade e qualidade de vida de 280 famílias madeirenses.",
+    area: "Infraestruturas",
     concelho: "Câmara de Lobos",
-    freguesia: "Jardim da Serra",
-    assessor: "João Pereira",
-    secretaria: "Secretaria Regional da Agricultura",
+    freguesia: "Estreito de Câmara de Lobos",
+    assessor: "Arq. João Pereira",
+    secretaria: "Secretaria Regional das Infraestruturas",
     createdAt: "2024-01-10",
     updatedAt: "2024-01-18",
     status: "ativo"
   },
   {
     id: "3",
-    title: "Campanha de Sensibilização Ambiental nas Escolas",
-    description: "Programa educativo sobre sustentabilidade e proteção ambiental dirigido aos estudantes",
-    area: "Ambiente e Recursos Naturais",
+    title: "Abertura de 18km de Caminhos Agrícolas",
+    description: "Criação e beneficiação de caminhos agrícolas para facilitar o acesso às zonas de produção, beneficiando 150 produtores locais e melhorando o escoamento de produtos agrícolas.",
+    area: "Agricultura e Pescas",
     concelho: "Santa Cruz",
-    freguesia: "Santa Cruz",
-    assessor: "Ana Costa",
-    secretaria: "Secretaria Regional do Ambiente",
+    freguesia: "Camacha",
+    assessor: "Eng. Ana Costa",
+    secretaria: "Secretaria Regional da Agricultura e Pescas",
     createdAt: "2024-01-08",
     updatedAt: "2024-01-16",
     status: "em_revisao"
   },
   {
     id: "4",
-    title: "Festival de Cultura Tradicional Madeirense",
-    description: "Evento anual de promoção das tradições culturais da Madeira com folclore e gastronomia",
-    area: "Cultura e Turismo",
+    title: "Construção de 12 Postos de Saúde Rurais",
+    description: "Ampliação da rede de cuidados de saúde primários com a construção de 12 novos postos de saúde em zonas rurais, servindo uma população de aproximadamente 8.000 habitantes.",
+    area: "Saúde e Proteção Civil",
     concelho: "Machico",
-    freguesia: "Machico",
-    assessor: "Pedro Santos",
-    secretaria: "Secretaria Regional do Turismo e Cultura",
+    freguesia: "Porto da Cruz",
+    assessor: "Dr. Pedro Santos",
+    secretaria: "Secretaria Regional da Saúde e Proteção Civil",
     createdAt: "2024-01-05",
     updatedAt: "2024-01-14",
+    status: "ativo"
+  },
+  {
+    id: "5",
+    title: "Modernização de 25 Escolas Básicas",
+    description: "Projeto de modernização e digitalização de 25 estabelecimentos de ensino básico, incluindo renovação de equipamentos, infraestruturas tecnológicas e espaços de aprendizagem.",
+    area: "Economia",
+    concelho: "Ribeira Brava",
+    freguesia: "Ribeira Brava",
+    assessor: "Prof. Clara Mendes",
+    secretaria: "Secretaria Regional da Economia",
+    createdAt: "2024-01-03",
+    updatedAt: "2024-01-12",
+    status: "ativo"
+  },
+  {
+    id: "6",
+    title: "Instalação de 150 Pontos de Carregamento Elétrico",
+    description: "Expansão da rede de mobilidade elétrica com instalação de 150 novos pontos de carregamento distribuídos estrategicamente por todos os concelhos da Região.",
+    area: "Ambiente",
+    concelho: "Porto Santo",
+    freguesia: "Porto Santo",
+    assessor: "Eng. Rui Fernandes",
+    secretaria: "Secretaria Regional do Ambiente",
+    createdAt: "2024-01-01",
+    updatedAt: "2024-01-10",
     status: "ativo"
   }
 ];
@@ -139,6 +165,10 @@ export function InformationGrid({ records = mockRecords, onViewRecord, onDownloa
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-4 w-4" />
                 <span>{record.assessor}</span>
+              </div>
+
+              <div className="text-xs text-muted-foreground pt-1 border-t">
+                {record.secretaria}
               </div>
               
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

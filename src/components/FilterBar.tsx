@@ -8,11 +8,13 @@ interface FilterBarProps {
   onConcelhoChange: (concelho: string) => void;
   onFreguesiaChange: (freguesia: string) => void;
   onAreaChange: (area: string) => void;
+  onSecretariaChange: (secretaria: string) => void;
   onSearchChange: (search: string) => void;
   selectedYear: string;
   selectedConcelho: string;
   selectedFreguesia: string;
   selectedArea: string;
+  selectedSecretaria: string;
   searchTerm: string;
 }
 
@@ -34,15 +36,25 @@ const concelhos = [
 const areas = [
   "Todas as Áreas",
   "Agricultura e Pescas",
-  "Ambiente e Recursos Naturais",
-  "Cultura e Turismo", 
-  "Economia e Finanças",
-  "Educação",
-  "Equipamento Social",
   "Infraestruturas",
-  "Saúde",
-  "Segurança e Proteção Civil",
-  "Trabalho e Formação Profissional"
+  "Saúde e Proteção Civil",
+  "Economia",
+  "Finanças",
+  "Turismo",
+  "Cultura",
+  "Ambiente"
+];
+
+const secretarias = [
+  "Todas as Secretarias",
+  "Secretaria Regional da Agricultura e Pescas",
+  "Secretaria Regional das Infraestruturas",
+  "Secretaria Regional da Saúde e Proteção Civil",
+  "Secretaria Regional da Economia",
+  "Secretaria Regional das Finanças",
+  "Secretaria Regional do Turismo",
+  "Secretaria Regional da Cultura",
+  "Secretaria Regional do Ambiente"
 ];
 
 export function FilterBar({
@@ -50,11 +62,13 @@ export function FilterBar({
   onConcelhoChange,
   onFreguesiaChange,
   onAreaChange,
+  onSecretariaChange,
   onSearchChange,
   selectedYear,
   selectedConcelho,
   selectedFreguesia,
   selectedArea,
+  selectedSecretaria,
   searchTerm
 }: FilterBarProps) {
   const currentYear = new Date().getFullYear();
@@ -67,7 +81,7 @@ export function FilterBar({
         <h2 className="text-lg font-semibold text-foreground">Filtros de Pesquisa</h2>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
         {/* Search */}
         <div className="lg:col-span-2 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -108,19 +122,6 @@ export function FilterBar({
           </SelectContent>
         </Select>
 
-        {/* Freguesia Filter */}
-        <Select value={selectedFreguesia} onValueChange={onFreguesiaChange}>
-          <SelectTrigger>
-            <SelectValue placeholder="Freguesia" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as Freguesias</SelectItem>
-            {/* Freguesias seriam carregadas dinamicamente baseadas no concelho */}
-            <SelectItem value="freguesia1">Exemplo Freguesia 1</SelectItem>
-            <SelectItem value="freguesia2">Exemplo Freguesia 2</SelectItem>
-          </SelectContent>
-        </Select>
-
         {/* Area Filter */}
         <Select value={selectedArea} onValueChange={onAreaChange}>
           <SelectTrigger>
@@ -134,6 +135,32 @@ export function FilterBar({
             ))}
           </SelectContent>
         </Select>
+
+        {/* Secretaria Filter */}
+        <Select value={selectedSecretaria} onValueChange={onSecretariaChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Secretaria" />
+          </SelectTrigger>
+          <SelectContent>
+            {secretarias.map((secretaria) => (
+              <SelectItem key={secretaria} value={secretaria}>
+                {secretaria}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Freguesia Filter */}
+        <Select value={selectedFreguesia} onValueChange={onFreguesiaChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Freguesia" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as Freguesias</SelectItem>
+            <SelectItem value="freguesia1">Exemplo Freguesia 1</SelectItem>
+            <SelectItem value="freguesia2">Exemplo Freguesia 2</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex justify-end mt-4">
@@ -144,6 +171,7 @@ export function FilterBar({
             onConcelhoChange("Todos os Concelhos");
             onFreguesiaChange("all");
             onAreaChange("Todas as Áreas");
+            onSecretariaChange("Todas as Secretarias");
             onSearchChange("");
           }}
         >
