@@ -164,22 +164,38 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
   };
 
   const handleReset = () => {
-    setFormData({
-      title: "",
-      description: "",
-      area: "",
-      concelho: "",
-      freguesia: "",
-      secretaria: "",
-      assessor: "",
-      attachments: [],
-      news: [],
-      value: "",
-      conclusionDate: ""
-    });
-    setErrors({});
-    setNewAttachment({name: '', url: '', type: 'file'});
-    setNewNews({title: '', content: '', link: ''});
+    if (window.confirm("Tem a certeza que quer limpar todos os dados? Esta ação não pode ser desfeita.")) {
+      setFormData({
+        title: "",
+        description: "",
+        area: "",
+        concelho: "",
+        freguesia: "",
+        secretaria: "",
+        assessor: "",
+        attachments: [],
+        news: [],
+        value: "",
+        conclusionDate: ""
+      });
+      setErrors({});
+      setNewAttachment({name: '', url: '', type: 'file'});
+      setNewNews({title: '', content: '', link: ''});
+    }
+  };
+
+  const handleClose = () => {
+    const hasData = formData.title || formData.description || formData.area || 
+                   formData.concelho || formData.freguesia || formData.assessor ||
+                   formData.attachments.length > 0 || formData.news.length > 0;
+    
+    if (hasData) {
+      if (window.confirm("Tem a certeza que quer sair? Todos os dados não guardados serão perdidos.")) {
+        setOpen(false);
+      }
+    } else {
+      setOpen(false);
+    }
   };
 
   const addAttachment = () => {
@@ -217,7 +233,7 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(newOpen) => newOpen ? setOpen(true) : handleClose()}>
       <DialogTrigger asChild>
         <Button className="bg-white text-primary hover:bg-blue-50">
           <Plus className="h-4 w-4 mr-2" />
@@ -387,7 +403,7 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
 
           {/* Attachments */}
           <div className="space-y-4">
-            <Label>Anexos</Label>
+            <Label>Anexos (Ficheiros)</Label>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
               <Input
                 placeholder="Nome do anexo"

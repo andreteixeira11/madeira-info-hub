@@ -79,7 +79,7 @@ export function FilterBar({
 
   return (
     <div className="bg-card shadow-card-soft rounded-lg mb-6">
-      <Accordion type="single" collapsible defaultValue="filters">
+      <Accordion type="single" collapsible>
         <AccordionItem value="filters" className="border-none">
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-2">

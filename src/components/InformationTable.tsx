@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Eye, Download, ExternalLink, Paperclip } from "lucide-react";
+import { ExternalLink, Paperclip } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Attachment {
   name: string;
@@ -36,8 +36,6 @@ interface InformationRecord {
 
 interface InformationTableProps {
   records: InformationRecord[];
-  onViewRecord: (id: string) => void;
-  onDownloadRecord: (id: string) => void;
 }
 
 // Dados detalhados de Machico
@@ -206,7 +204,8 @@ const getStatusText = (status: string) => {
   }
 };
 
-export function InformationTable({ records = machicoRecords, onViewRecord, onDownloadRecord }: InformationTableProps) {
+export function InformationTable({ records }: InformationTableProps) {
+  const navigate = useNavigate();
   const allRecords = [...machicoRecords, ...records];
 
   return (
@@ -214,25 +213,31 @@ export function InformationTable({ records = machicoRecords, onViewRecord, onDow
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/50">
-            <TableHead className="font-semibold">Projeto</TableHead>
+            <TableHead className="font-semibold w-[50%]">Projeto</TableHead>
             <TableHead className="font-semibold">Área</TableHead>
             <TableHead className="font-semibold">Localização</TableHead>
-            <TableHead className="font-semibold">Assessor</TableHead>
             <TableHead className="font-semibold">Valor</TableHead>
             <TableHead className="font-semibold">Conclusão</TableHead>
-            <TableHead className="font-semibold">Estado</TableHead>
-            <TableHead className="font-semibold text-center">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {allRecords.map((record) => (
-            <TableRow key={record.id} className="hover:bg-muted/30">
+            <TableRow 
+              key={record.id} 
+              className="hover:bg-muted/30 cursor-pointer"
+              onClick={() => navigate(`/registo/${record.id}`)}
+            >
               <TableCell className="max-w-xs">
                 <div>
-                  <h4 className="font-medium text-foreground line-clamp-2 mb-1">{record.title}</h4>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{record.description}</p>
+                  <h4 className="font-semibold text-lg mb-1 line-clamp-2">{record.title}</h4>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {record.description.length > 120 
+                      ? `${record.description.substring(0, 120)}...` 
+                      : record.description
+                    }
+                  </p>
                   {(record.attachments?.length || record.news?.length) && (
-                    <div className="flex gap-1 mt-2">
+                    <div className="flex gap-3 mt-2">
                       {record.attachments?.length > 0 && (
                         <div className="flex items-center gap-1 text-xs text-primary">
                           <Paperclip className="h-3 w-3" />
@@ -250,7 +255,7 @@ export function InformationTable({ records = machicoRecords, onViewRecord, onDow
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant="secondary" className="bg-primary/10 text-primary">
+                <Badge variant="secondary" className="bg-primary/10 text-primary font-medium">
                   {record.area}
                 </Badge>
               </TableCell>
@@ -258,14 +263,6 @@ export function InformationTable({ records = machicoRecords, onViewRecord, onDow
                 <div>
                   <div className="font-medium">{record.concelho}</div>
                   <div className="text-muted-foreground">{record.freguesia}</div>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm">
-                <div>
-                  <div className="font-medium">{record.assessor}</div>
-                  <div className="text-xs text-muted-foreground line-clamp-1" title={record.secretaria}>
-                    {record.secretaria}
-                  </div>
                 </div>
               </TableCell>
               <TableCell className="text-sm font-medium">
@@ -276,31 +273,6 @@ export function InformationTable({ records = machicoRecords, onViewRecord, onDow
                   ? new Date(record.conclusionDate).toLocaleDateString('pt-PT')
                   : "N/A"
                 }
-              </TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(record.status)}>
-                  {getStatusText(record.status)}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-1 justify-center">
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => onViewRecord(record.id)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => onDownloadRecord(record.id)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                </div>
               </TableCell>
             </TableRow>
           ))}

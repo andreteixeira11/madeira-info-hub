@@ -2,7 +2,8 @@ import { useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
 import { InformationTable } from "@/components/InformationTable";
 import { NewRecordModal } from "@/components/NewRecordModal";
-import { Database } from "lucide-react";
+import { Database, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { generatePDF } from "@/utils/pdfGenerator";
 
@@ -73,7 +74,17 @@ const Index = () => {
                 </p>
               </div>
             </div>
-            <NewRecordModal onAddRecord={handleAddRecord} />
+            <div className="flex gap-3">
+              <Button 
+                onClick={handleGeneratePDF}
+                variant="outline"
+                className="bg-white text-primary hover:bg-blue-50 border-white/20"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Gerar PDF
+              </Button>
+              <NewRecordModal onAddRecord={handleAddRecord} />
+            </div>
           </div>
         </div>
       </header>
@@ -115,11 +126,7 @@ const Index = () => {
         </div>
 
         {/* Information Table */}
-        <InformationTable 
-          records={records}
-          onViewRecord={handleViewRecord}
-          onDownloadRecord={handleDownloadRecord}
-        />
+        <InformationTable records={records} />
       </div>
     </div>
   );
