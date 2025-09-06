@@ -5,8 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Save, X } from "lucide-react";
+import { Plus, Save, X, Paperclip, Trash2, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+interface Attachment {
+  name: string;
+  url: string;
+  type: 'file' | 'link';
+}
+
+interface News {
+  title: string;
+  content: string;
+  link?: string;
+  date: string;
+}
 
 interface NewRecordData {
   title: string;
@@ -16,6 +29,10 @@ interface NewRecordData {
   freguesia: string;
   secretaria: string;
   assessor: string;
+  attachments: Attachment[];
+  news: News[];
+  value?: string;
+  conclusionDate?: string;
 }
 
 interface NewRecordModalProps {
@@ -68,10 +85,16 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
     concelho: "",
     freguesia: "",
     secretaria: "",
-    assessor: ""
+    assessor: "",
+    attachments: [],
+    news: [],
+    value: "",
+    conclusionDate: ""
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [newAttachment, setNewAttachment] = useState<{name: string; url: string; type: 'file' | 'link'}>({name: '', url: '', type: 'file'});
+  const [newNews, setNewNews] = useState<{title: string; content: string; link: string}>({title: '', content: '', link: ''});
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -124,7 +147,11 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
       concelho: "",
       freguesia: "",
       secretaria: "",
-      assessor: ""
+      assessor: "",
+      attachments: [],
+      news: [],
+      value: "",
+      conclusionDate: ""
     });
     
     setErrors({});
@@ -144,9 +171,49 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
       concelho: "",
       freguesia: "",
       secretaria: "",
-      assessor: ""
+      assessor: "",
+      attachments: [],
+      news: [],
+      value: "",
+      conclusionDate: ""
     });
     setErrors({});
+    setNewAttachment({name: '', url: '', type: 'file'});
+    setNewNews({title: '', content: '', link: ''});
+  };
+
+  const addAttachment = () => {
+    if (newAttachment.name && newAttachment.url) {
+      setFormData(prev => ({
+        ...prev,
+        attachments: [...prev.attachments, newAttachment]
+      }));
+      setNewAttachment({name: '', url: '', type: 'file'});
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      attachments: prev.attachments.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addNews = () => {
+    if (newNews.title && newNews.content) {
+      setFormData(prev => ({
+        ...prev,
+        news: [...prev.news, { ...newNews, date: new Date().toISOString().split('T')[0] }]
+      }));
+      setNewNews({title: '', content: '', link: ''});
+    }
+  };
+
+  const removeNews = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      news: prev.news.filter((_, i) => i !== index)
+    }));
   };
 
   return (
@@ -294,6 +361,127 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
               className={errors.assessor ? "border-red-500" : ""}
             />
             {errors.assessor && <p className="text-sm text-red-500">{errors.assessor}</p>}
+          </div>
+
+          {/* Additional Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="value">Valor da Obra</Label>
+              <Input
+                id="value"
+                value={formData.value}
+                onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
+                placeholder="Ex: 1.500.000 euros"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="conclusionDate">Data de Conclusão</Label>
+              <Input
+                id="conclusionDate"
+                type="date"
+                value={formData.conclusionDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, conclusionDate: e.target.value }))}
+              />
+            </div>
+          </div>
+
+          {/* Attachments */}
+          <div className="space-y-4">
+            <Label>Anexos</Label>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+              <Input
+                placeholder="Nome do anexo"
+                value={newAttachment.name}
+                onChange={(e) => setNewAttachment(prev => ({ ...prev, name: e.target.value }))}
+              />
+              <Input
+                placeholder="URL/Link do anexo"
+                value={newAttachment.url}
+                onChange={(e) => setNewAttachment(prev => ({ ...prev, url: e.target.value }))}
+              />
+              <Select
+                value={newAttachment.type}
+                onValueChange={(value: 'file' | 'link') => setNewAttachment(prev => ({ ...prev, type: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="file">Ficheiro</SelectItem>
+                  <SelectItem value="link">Link</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button type="button" onClick={addAttachment} size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                Adicionar
+              </Button>
+            </div>
+            {formData.attachments.length > 0 && (
+              <div className="space-y-2">
+                {formData.attachments.map((attachment, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                    <div className="flex items-center gap-2">
+                      {attachment.type === 'file' ? <Paperclip className="h-4 w-4" /> : <ExternalLink className="h-4 w-4" />}
+                      <span className="text-sm">{attachment.name}</span>
+                    </div>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => removeAttachment(index)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* News */}
+          <div className="space-y-4">
+            <Label>Notícias Relacionadas</Label>
+            <div className="space-y-2">
+              <Input
+                placeholder="Título da notícia"
+                value={newNews.title}
+                onChange={(e) => setNewNews(prev => ({ ...prev, title: e.target.value }))}
+              />
+              <Textarea
+                placeholder="Conteúdo da notícia"
+                value={newNews.content}
+                onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
+                rows={2}
+              />
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Link da notícia (opcional)"
+                  value={newNews.link}
+                  onChange={(e) => setNewNews(prev => ({ ...prev, link: e.target.value }))}
+                  className="flex-1"
+                />
+                <Button type="button" onClick={addNews} size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Adicionar
+                </Button>
+              </div>
+            </div>
+            {formData.news.length > 0 && (
+              <div className="space-y-2">
+                {formData.news.map((news, index) => (
+                  <div key={index} className="p-3 bg-muted rounded space-y-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-sm">{news.title}</h4>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeNews(index)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{news.content}</p>
+                    {news.link && (
+                      <a href={news.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+                        <ExternalLink className="h-3 w-3" />
+                        Ver notícia
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}

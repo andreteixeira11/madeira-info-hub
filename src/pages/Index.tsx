@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
-import { StatsCards } from "@/components/StatsCards";
-import { InformationGrid } from "@/components/InformationGrid";
+import { InformationTable } from "@/components/InformationTable";
 import { NewRecordModal } from "@/components/NewRecordModal";
 import { Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { generatePDF } from "@/utils/pdfGenerator";
 
 const Index = () => {
   const { toast } = useToast();
@@ -45,6 +45,17 @@ const Index = () => {
     setRecords(prev => [recordWithId, ...prev]);
   };
 
+  const handleGeneratePDF = () => {
+    // Get all records including the demo data for PDF generation
+    const allRecords = records; // The table component already merges with demo data
+    generatePDF(allRecords, filters);
+    
+    toast({
+      title: "PDF Gerado",
+      description: "O relatório foi gerado e está a ser descarregado.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -69,14 +80,6 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Statistics Cards */}
-        <StatsCards 
-          totalRecords={1847}
-          totalAssessors={34}
-          totalConcelhos={11}
-          monthlyGrowth={15}
-        />
-
         {/* Filters */}
         <FilterBar
           onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
@@ -91,6 +94,7 @@ const Index = () => {
           selectedArea={filters.area}
           selectedSecretaria={filters.secretaria}
           searchTerm={filters.search}
+          onGeneratePDF={handleGeneratePDF}
         />
 
         {/* Results Header */}
@@ -102,16 +106,16 @@ const Index = () => {
             <p className="text-muted-foreground">
               {filters.search || filters.year !== "all" || filters.concelho !== "Todos os Concelhos" || filters.area !== "Todas as Áreas" || filters.secretaria !== "Todas as Secretarias"
                 ? "Resultados filtrados" 
-                : "Todas as informações disponíveis"}
+                : "Todas as informações disponíveis (inclui dados de exemplo de Machico)"}
             </p>
           </div>
           <div className="text-sm text-muted-foreground">
-            {records.length + 6} registos encontrados
+            {records.length + 8} registos encontrados
           </div>
         </div>
 
-        {/* Information Grid */}
-        <InformationGrid 
+        {/* Information Table */}
+        <InformationTable 
           records={records}
           onViewRecord={handleViewRecord}
           onDownloadRecord={handleDownloadRecord}
