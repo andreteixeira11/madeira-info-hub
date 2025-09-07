@@ -40,23 +40,29 @@ interface InformationTableProps {
 
 // Dados detalhados de Machico
 const machicoRecords: InformationRecord[] = [
-  {
-    id: "machico-1",
-    title: "Requalificação da rede viária regional - zona leste – PAMUS",
-    description: "Projeto de requalificação da rede viária na zona leste da região, melhorando a conectividade e segurança rodoviária.",
-    area: "Infraestruturas",
-    concelho: "Machico",
-    freguesia: "Machico",
-    assessor: "Eng. Carlos Silva",
-    secretaria: "Secretaria Regional das Infraestruturas",
-    createdAt: "2022-01-15",
-    updatedAt: "2022-09-20",
-    status: "ativo",
-    value: "1.836.017,04 euros",
-    conclusionDate: "2022-09-01",
-    attachments: [],
-    news: []
-  },
+    // Sample data for Machico - Updated with news
+    {
+      id: "demo-1",
+      title: "Requalificação da rede viária regional - zona leste – PAMUS",
+      description: "Requalificação da rede viária regional na zona leste da região, melhorando a conectividade e segurança rodoviária.",
+      area: "Infraestruturas",
+      concelho: "Machico",
+      freguesia: "Machico",
+      assessor: "Eng. Carlos Silva",
+      secretaria: "Secretaria Regional das Infraestruturas",
+      createdAt: "2022-01-15",
+      updatedAt: "2022-09-20",
+      status: "ativo",
+      value: "1.836.017,04 euros",
+      conclusionDate: "2022-09-01",
+      attachments: [],
+      news: [{
+        title: "Albuquerque entregou 20 apartamentos em Santana ao abrigo do PRR",
+        content: "O presidente do Governo Regional, Miguel Albuquerque, procedeu à entrega das casas do Conjunto Habitacional do Barreiro, em Santana, beneficiando famílias do concelho com 20 novos fogos construídos ao abrigo do Plano de Recuperação e Resiliência (PRR).",
+        link: "https://www.dnoticias.pt/2025/7/28/457670-albuquerque-entregou-20-apartamentos-em-santana-ao-abrigo-do-prr/",
+        date: "2025-07-28"
+      }]
+    },
   {
     id: "machico-2", 
     title: "Estabilização da ER102 – Massapez",
@@ -72,7 +78,12 @@ const machicoRecords: InformationRecord[] = [
     value: "505.080 euros",
     conclusionDate: "2017-12-01",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque entregou 20 apartamentos em Santana ao abrigo do PRR",
+      content: "O presidente do Governo Regional, Miguel Albuquerque, procedeu à entrega das casas do Conjunto Habitacional do Barreiro, em Santana, beneficiando famílias do concelho com 20 novos fogos construídos ao abrigo do Plano de Recuperação e Resiliência (PRR).",
+      link: "https://www.dnoticias.pt/2025/7/28/457670-albuquerque-entregou-20-apartamentos-em-santana-ao-abrigo-do-prr/",
+      date: "2025-07-28"
+    }]
   },
   {
     id: "machico-3",

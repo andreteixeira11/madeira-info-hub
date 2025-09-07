@@ -5,14 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Save, X, Paperclip, Trash2, ExternalLink } from "lucide-react";
+import { Plus, X, ExternalLink, Trash2, Upload, Link } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface Attachment {
-  name: string;
-  url: string;
-  type: 'file' | 'link';
-}
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 interface News {
   title: string;
@@ -21,502 +16,441 @@ interface News {
   date: string;
 }
 
-interface NewRecordData {
-  title: string;
-  description: string;
-  area: string;
-  concelho: string;
-  freguesia: string;
-  secretaria: string;
-  assessor: string;
-  attachments: Attachment[];
-  news: News[];
-  value?: string;
-  conclusionDate?: string;
-}
-
 interface NewRecordModalProps {
-  onAddRecord: (record: NewRecordData) => void;
+  onAddRecord: (record: any) => void;
 }
-
-const concelhos = [
-  "Funchal",
-  "Câmara de Lobos", 
-  "Ribeira Brava",
-  "Ponta do Sol",
-  "Calheta",
-  "Porto Moniz",
-  "São Vicente",
-  "Santana",
-  "Machico",
-  "Santa Cruz",
-  "Porto Santo"
-];
-
-const areas = [
-  "Agricultura e Pescas",
-  "Infraestruturas",
-  "Saúde e Proteção Civil",
-  "Economia",
-  "Finanças",
-  "Turismo",
-  "Cultura",
-  "Ambiente"
-];
-
-const secretarias = [
-  "Secretaria Regional da Agricultura e Pescas",
-  "Secretaria Regional das Infraestruturas",
-  "Secretaria Regional da Saúde e Proteção Civil", 
-  "Secretaria Regional da Economia",
-  "Secretaria Regional das Finanças",
-  "Secretaria Regional do Turismo",
-  "Secretaria Regional da Cultura",
-  "Secretaria Regional do Ambiente"
-];
 
 export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState<NewRecordData>({
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     area: "",
     concelho: "",
     freguesia: "",
-    secretaria: "",
     assessor: "",
-    attachments: [],
-    news: [],
+    secretaria: "",
     value: "",
     conclusionDate: ""
   });
+  const [news, setNews] = useState<News[]>([]);
+  const [newNews, setNewNews] = useState<{title: string; content: string; link: string}>({
+    title: '', 
+    content: '', 
+    link: ''
+  });
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'close' | 'clear' | null>(null);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [newAttachment, setNewAttachment] = useState<{name: string; url: string; type: 'file' | 'link'}>({name: '', url: '', type: 'file'});
-  const [newNews, setNewNews] = useState<{title: string; content: string; link: string}>({title: '', content: '', link: ''});
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = "Título é obrigatório";
-    }
-    if (!formData.description.trim()) {
-      newErrors.description = "Descrição é obrigatória";
-    }
-    if (!formData.area) {
-      newErrors.area = "Área é obrigatória";
-    }
-    if (!formData.concelho) {
-      newErrors.concelho = "Concelho é obrigatório";
-    }
-    if (!formData.freguesia.trim()) {
-      newErrors.freguesia = "Freguesia é obrigatória";
-    }
-    if (!formData.secretaria) {
-      newErrors.secretaria = "Secretaria é obrigatória";
-    }
-    if (!formData.assessor.trim()) {
-      newErrors.assessor = "Nome do assessor é obrigatório";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      toast({
-        title: "Erro na validação",
-        description: "Por favor, preencha todos os campos obrigatórios.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    onAddRecord(formData);
-    
-    // Reset form
+  const resetForm = () => {
     setFormData({
       title: "",
       description: "",
       area: "",
       concelho: "",
       freguesia: "",
-      secretaria: "",
       assessor: "",
-      attachments: [],
-      news: [],
+      secretaria: "",
       value: "",
       conclusionDate: ""
     });
-    
-    setErrors({});
-    setOpen(false);
-    
-    toast({
-      title: "Registo criado com sucesso!",
-      description: "A nova informação foi adicionada ao sistema.",
-    });
+    setNews([]);
+    setNewNews({title: '', content: '', link: ''});
+    setAttachments([]);
   };
 
-  const handleReset = () => {
-    if (window.confirm("Tem a certeza que quer limpar todos os dados? Esta ação não pode ser desfeita.")) {
-      setFormData({
-        title: "",
-        description: "",
-        area: "",
-        concelho: "",
-        freguesia: "",
-        secretaria: "",
-        assessor: "",
-        attachments: [],
-        news: [],
-        value: "",
-        conclusionDate: ""
-      });
-      setErrors({});
-      setNewAttachment({name: '', url: '', type: 'file'});
-      setNewNews({title: '', content: '', link: ''});
+  const handleConfirmAction = () => {
+    if (pendingAction === 'close') {
+      setOpen(false);
+      resetForm();
+    } else if (pendingAction === 'clear') {
+      resetForm();
     }
+    setShowConfirmDialog(false);
+    setPendingAction(null);
+  };
+
+  const handleCancelAction = () => {
+    setShowConfirmDialog(false);
+    setPendingAction(null);
+  };
+
+  const checkForChanges = () => {
+    const hasFormData = Object.values(formData).some(value => value.trim() !== '');
+    const hasNews = news.length > 0;
+    const hasAttachments = attachments.length > 0;
+    return hasFormData || hasNews || hasAttachments;
   };
 
   const handleClose = () => {
-    const hasData = formData.title || formData.description || formData.area || 
-                   formData.concelho || formData.freguesia || formData.assessor ||
-                   formData.attachments.length > 0 || formData.news.length > 0;
-    
-    if (hasData) {
-      if (window.confirm("Tem a certeza que quer sair? Todos os dados não guardados serão perdidos.")) {
-        setOpen(false);
-      }
+    if (checkForChanges()) {
+      setPendingAction('close');
+      setShowConfirmDialog(true);
     } else {
       setOpen(false);
     }
   };
 
-  const addAttachment = () => {
-    if (newAttachment.name && newAttachment.url) {
-      setFormData(prev => ({
-        ...prev,
-        attachments: [...prev.attachments, newAttachment]
-      }));
-      setNewAttachment({name: '', url: '', type: 'file'});
+  const handleClear = () => {
+    if (checkForChanges()) {
+      setPendingAction('clear');
+      setShowConfirmDialog(true);
+    } else {
+      resetForm();
     }
-  };
-
-  const removeAttachment = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      attachments: prev.attachments.filter((_, i) => i !== index)
-    }));
   };
 
   const addNews = () => {
     if (newNews.title && newNews.content) {
-      setFormData(prev => ({
-        ...prev,
-        news: [...prev.news, { ...newNews, date: new Date().toISOString().split('T')[0] }]
-      }));
+      setNews(prev => [...prev, { 
+        ...newNews, 
+        date: new Date().toISOString().split('T')[0] 
+      }]);
       setNewNews({title: '', content: '', link: ''});
     }
   };
 
   const removeNews = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      news: prev.news.filter((_, i) => i !== index)
-    }));
+    setNews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      setAttachments(prev => [...prev, ...Array.from(files)]);
+    }
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.description || !formData.area || 
+        !formData.concelho || !formData.freguesia || !formData.assessor || 
+        !formData.secretaria) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onAddRecord({ ...formData, news, attachments });
+    toast({
+      title: "Registo criado",
+      description: "O novo registo foi adicionado com sucesso.",
+    });
+    setOpen(false);
+    resetForm();
   };
 
   return (
-    <Dialog open={open} onOpenChange={(newOpen) => newOpen ? setOpen(true) : handleClose()}>
-      <DialogTrigger asChild>
-        <Button className="bg-white text-primary hover:bg-blue-50">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Registo
-        </Button>
-      </DialogTrigger>
-      
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Criar Novo Registo</DialogTitle>
-        </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div className="space-y-2">
-            <Label htmlFor="title">
-              Título <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              placeholder="Ex: Construção de nova estrada em..."
-              className={errors.title ? "border-red-500" : ""}
-            />
-            {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
-          </div>
+    <>
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogTrigger asChild>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Registo
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Criar Novo Registo</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Basic Information */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Título *</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Ex: Construção de nova estrada..."
+                  required
+                />
+              </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">
-              Descrição <span className="text-red-500">*</span>
-            </Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Descreva detalhadamente a informação..."
-              rows={4}
-              className={errors.description ? "border-red-500" : ""}
-            />
-            {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Descrição *</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Descreva detalhadamente o projeto..."
+                  rows={4}
+                  required
+                />
+              </div>
 
-          {/* Area and Secretaria */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>
-                Área <span className="text-red-500">*</span>
-              </Label>
-              <Select 
-                value={formData.area} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, area: value }))}
-              >
-                <SelectTrigger className={errors.area ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Selecione a área" />
-                </SelectTrigger>
-                <SelectContent>
-                  {areas.map((area) => (
-                    <SelectItem key={area} value={area}>
-                      {area}
-                    </SelectItem>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Área *</Label>
+                  <Select value={formData.area} onValueChange={(value) => setFormData(prev => ({ ...prev, area: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a área" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Estradas">Estradas</SelectItem>
+                      <SelectItem value="Habitação">Habitação</SelectItem>
+                      <SelectItem value="Educação">Educação</SelectItem>
+                      <SelectItem value="Saúde">Saúde</SelectItem>
+                      <SelectItem value="Obras Marítimas">Obras Marítimas</SelectItem>
+                      <SelectItem value="Água e Resíduos">Água e Resíduos</SelectItem>
+                      <SelectItem value="Florestas">Florestas</SelectItem>
+                      <SelectItem value="Energia">Energia</SelectItem>
+                      <SelectItem value="Social">Social</SelectItem>
+                      <SelectItem value="Agricultura">Agricultura</SelectItem>
+                      <SelectItem value="Mar">Mar</SelectItem>
+                      <SelectItem value="Cultura">Cultura</SelectItem>
+                      <SelectItem value="Segurança">Segurança</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Secretaria *</Label>
+                  <Select value={formData.secretaria} onValueChange={(value) => setFormData(prev => ({ ...prev, secretaria: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a secretaria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Agricultura e Pescas">Agricultura e Pescas</SelectItem>
+                      <SelectItem value="Infraestruturas">Infraestruturas</SelectItem>
+                      <SelectItem value="Saude e Protecao Civil">Saúde e Proteção Civil</SelectItem>
+                      <SelectItem value="Economia">Economia</SelectItem>
+                      <SelectItem value="Finanças">Finanças</SelectItem>
+                      <SelectItem value="Turismo Cultura e Ambiente">Turismo Cultura e Ambiente</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Concelho *</Label>
+                  <Select value={formData.concelho} onValueChange={(value) => setFormData(prev => ({ ...prev, concelho: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o concelho" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Machico">Machico</SelectItem>
+                      <SelectItem value="Santana">Santana</SelectItem>
+                      <SelectItem value="Funchal">Funchal</SelectItem>
+                      <SelectItem value="Câmara de Lobos">Câmara de Lobos</SelectItem>
+                      <SelectItem value="Ribeira Brava">Ribeira Brava</SelectItem>
+                      <SelectItem value="Ponta do Sol">Ponta do Sol</SelectItem>
+                      <SelectItem value="Calheta">Calheta</SelectItem>
+                      <SelectItem value="Porto Moniz">Porto Moniz</SelectItem>
+                      <SelectItem value="São Vicente">São Vicente</SelectItem>
+                      <SelectItem value="Santa Cruz">Santa Cruz</SelectItem>
+                      <SelectItem value="Porto Santo">Porto Santo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="freguesia">Freguesia *</Label>
+                  <Input
+                    id="freguesia"
+                    value={formData.freguesia}
+                    onChange={(e) => setFormData(prev => ({ ...prev, freguesia: e.target.value }))}
+                    placeholder="Ex: São Pedro"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="assessor">Assessor *</Label>
+                <Input
+                  id="assessor"
+                  value={formData.assessor}
+                  onChange={(e) => setFormData(prev => ({ ...prev, assessor: e.target.value }))}
+                  placeholder="Nome do responsável"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="value">Valor</Label>
+                  <Input
+                    id="value"
+                    value={formData.value}
+                    onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
+                    placeholder="Ex: 1.500.000 euros"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="conclusionDate">Data de Conclusão</Label>
+                  <Input
+                    id="conclusionDate"
+                    type="date"
+                    value={formData.conclusionDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, conclusionDate: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Attachments Section */}
+            <div className="space-y-4">
+              <Label className="text-base font-medium">Anexos</Label>
+              <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+                <div className="flex gap-2">
+                  <Input
+                    type="file"
+                    multiple
+                    onChange={handleFileUpload}
+                    className="flex-1"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+                  />
+                  <Button type="button" size="sm" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}>
+                    <Upload className="h-4 w-4 mr-1" />
+                    Upload
+                  </Button>
+                </div>
+                
+                {/* Display uploaded files */}
+                {attachments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Ficheiros anexados:</Label>
+                    {attachments.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-background rounded border">
+                        <span className="text-sm truncate">{file.name}</span>
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => removeAttachment(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* News Section */}
+            <div className="space-y-4">
+              <Label className="text-base font-medium">Notícias Relacionadas</Label>
+              
+              {/* Add new news */}
+              <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+                <Input
+                  placeholder="Título da notícia"
+                  value={newNews.title}
+                  onChange={(e) => setNewNews(prev => ({ ...prev, title: e.target.value }))}
+                />
+                <Textarea
+                  placeholder="Conteúdo da notícia"
+                  value={newNews.content}
+                  onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
+                  rows={3}
+                />
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Link da notícia (opcional)"
+                    value={newNews.link}
+                    onChange={(e) => setNewNews(prev => ({ ...prev, link: e.target.value }))}
+                    className="flex-1"
+                  />
+                  <Button 
+                    type="button" 
+                    onClick={addNews} 
+                    size="sm"
+                    disabled={!newNews.title || !newNews.content}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Adicionar
+                  </Button>
+                </div>
+              </div>
+
+              {/* Existing news */}
+              {news.length > 0 && (
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Notícias existentes:</Label>
+                  {news.map((newsItem, index) => (
+                    <div key={index} className="p-3 border rounded-lg space-y-2">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm">{newsItem.title}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{newsItem.content}</p>
+                          {newsItem.link && (
+                            <a 
+                              href={newsItem.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-xs text-primary hover:underline flex items-center gap-1 mt-2"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              Ver notícia
+                            </a>
+                          )}
+                          <div className="text-xs text-muted-foreground mt-2">
+                            {new Date(newsItem.date).toLocaleDateString('pt-PT')}
+                          </div>
+                        </div>
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => removeNews(index)}
+                          className="ml-2"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
                   ))}
-                </SelectContent>
-              </Select>
-              {errors.area && <p className="text-sm text-red-500">{errors.area}</p>}
+                </div>
+              )}
             </div>
 
-            <div className="space-y-2">
-              <Label>
-                Secretaria <span className="text-red-500">*</span>
-              </Label>
-              <Select 
-                value={formData.secretaria} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, secretaria: value }))}
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleClear}
               >
-                <SelectTrigger className={errors.secretaria ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Selecione a secretaria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {secretarias.map((secretaria) => (
-                    <SelectItem key={secretaria} value={secretaria}>
-                      {secretaria}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.secretaria && <p className="text-sm text-red-500">{errors.secretaria}</p>}
-            </div>
-          </div>
-
-          {/* Location */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>
-                Concelho <span className="text-red-500">*</span>
-              </Label>
-              <Select 
-                value={formData.concelho} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, concelho: value }))}
-              >
-                <SelectTrigger className={errors.concelho ? "border-red-500" : ""}>
-                  <SelectValue placeholder="Selecione o concelho" />
-                </SelectTrigger>
-                <SelectContent>
-                  {concelhos.map((concelho) => (
-                    <SelectItem key={concelho} value={concelho}>
-                      {concelho}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.concelho && <p className="text-sm text-red-500">{errors.concelho}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="freguesia">
-                Freguesia <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="freguesia"
-                value={formData.freguesia}
-                onChange={(e) => setFormData(prev => ({ ...prev, freguesia: e.target.value }))}
-                placeholder="Ex: São Pedro"
-                className={errors.freguesia ? "border-red-500" : ""}
-              />
-              {errors.freguesia && <p className="text-sm text-red-500">{errors.freguesia}</p>}
-            </div>
-          </div>
-
-          {/* Assessor */}
-          <div className="space-y-2">
-            <Label htmlFor="assessor">
-              Nome do Assessor <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="assessor"
-              value={formData.assessor}
-              onChange={(e) => setFormData(prev => ({ ...prev, assessor: e.target.value }))}
-              placeholder="Seu nome completo"
-              className={errors.assessor ? "border-red-500" : ""}
-            />
-            {errors.assessor && <p className="text-sm text-red-500">{errors.assessor}</p>}
-          </div>
-
-          {/* Additional Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="value">Valor da Obra</Label>
-              <Input
-                id="value"
-                value={formData.value}
-                onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
-                placeholder="Ex: 1.500.000 euros"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="conclusionDate">Data de Conclusão</Label>
-              <Input
-                id="conclusionDate"
-                type="date"
-                value={formData.conclusionDate}
-                onChange={(e) => setFormData(prev => ({ ...prev, conclusionDate: e.target.value }))}
-              />
-            </div>
-          </div>
-
-          {/* Attachments */}
-          <div className="space-y-4">
-            <Label>Anexos (Ficheiros)</Label>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-              <Input
-                placeholder="Nome do anexo"
-                value={newAttachment.name}
-                onChange={(e) => setNewAttachment(prev => ({ ...prev, name: e.target.value }))}
-              />
-              <Input
-                placeholder="URL/Link do anexo"
-                value={newAttachment.url}
-                onChange={(e) => setNewAttachment(prev => ({ ...prev, url: e.target.value }))}
-              />
-              <Select
-                value={newAttachment.type}
-                onValueChange={(value: 'file' | 'link') => setNewAttachment(prev => ({ ...prev, type: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="file">Ficheiro</SelectItem>
-                  <SelectItem value="link">Link</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button type="button" onClick={addAttachment} size="sm">
-                <Plus className="h-4 w-4 mr-1" />
-                Adicionar
+                <X className="h-4 w-4 mr-2" />
+                Limpar
+              </Button>
+              <Button type="submit">
+                Criar Registo
               </Button>
             </div>
-            {formData.attachments.length > 0 && (
-              <div className="space-y-2">
-                {formData.attachments.map((attachment, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                    <div className="flex items-center gap-2">
-                      {attachment.type === 'file' ? <Paperclip className="h-4 w-4" /> : <ExternalLink className="h-4 w-4" />}
-                      <span className="text-sm">{attachment.name}</span>
-                    </div>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => removeAttachment(index)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
-          {/* News */}
-          <div className="space-y-4">
-            <Label>Notícias Relacionadas</Label>
-            <div className="space-y-2">
-              <Input
-                placeholder="Título da notícia"
-                value={newNews.title}
-                onChange={(e) => setNewNews(prev => ({ ...prev, title: e.target.value }))}
-              />
-              <Textarea
-                placeholder="Conteúdo da notícia"
-                value={newNews.content}
-                onChange={(e) => setNewNews(prev => ({ ...prev, content: e.target.value }))}
-                rows={2}
-              />
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Link da notícia (opcional)"
-                  value={newNews.link}
-                  onChange={(e) => setNewNews(prev => ({ ...prev, link: e.target.value }))}
-                  className="flex-1"
-                />
-                <Button type="button" onClick={addNews} size="sm">
-                  <Plus className="h-4 w-4 mr-1" />
-                  Adicionar
-                </Button>
-              </div>
-            </div>
-            {formData.news.length > 0 && (
-              <div className="space-y-2">
-                {formData.news.map((news, index) => (
-                  <div key={index} className="p-3 bg-muted rounded space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-medium text-sm">{news.title}</h4>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => removeNews(index)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{news.content}</p>
-                    {news.link && (
-                      <a href={news.link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
-                        <ExternalLink className="h-3 w-3" />
-                        Ver notícia
-                      </a>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={handleReset}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Limpar
-            </Button>
-            <Button type="submit">
-              <Save className="h-4 w-4 mr-2" />
-              Salvar Registo
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        open={showConfirmDialog}
+        onOpenChange={setShowConfirmDialog}
+        title="Confirmar Ação"
+        description={
+          pendingAction === 'close' 
+            ? "Tem a certeza que pretende sair? Todas as alterações não guardadas serão perdidas."
+            : "Tem a certeza que pretende limpar todos os campos? Todas as informações inseridas serão perdidas."
+        }
+        onConfirm={handleConfirmAction}
+        onCancel={handleCancelAction}
+        confirmText={pendingAction === 'close' ? "Sair" : "Limpar"}
+        cancelText="Cancelar"
+      />
+    </>
   );
 }

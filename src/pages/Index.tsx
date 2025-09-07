@@ -2,10 +2,12 @@ import { useState } from "react";
 import { FilterBar } from "@/components/FilterBar";
 import { InformationTable } from "@/components/InformationTable";
 import { NewRecordModal } from "@/components/NewRecordModal";
+import { PDFGenerationModal } from "@/components/PDFGenerationModal";
 import { Database, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { generatePDF } from "@/utils/pdfGenerator";
+import group761 from "@/assets/group-761.png";
+import group764 from "@/assets/group-764.png";
 
 const Index = () => {
   const { toast } = useToast();
@@ -19,6 +21,7 @@ const Index = () => {
   });
 
   const [records, setRecords] = useState([]);
+  const [showPDFModal, setShowPDFModal] = useState(false);
 
   const handleViewRecord = (id: string) => {
     toast({
@@ -47,24 +50,26 @@ const Index = () => {
   };
 
   const handleGeneratePDF = () => {
-    // Get all records including the demo data for PDF generation
-    const allRecords = records; // The table component already merges with demo data
-    generatePDF(allRecords, filters);
-    
-    toast({
-      title: "PDF Gerado",
-      description: "O relatório foi gerado e está a ser descarregado.",
-    });
+    setShowPDFModal(true);
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gradient-government shadow-government">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-gradient-government shadow-government relative overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url(${group761})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right center',
+            backgroundSize: 'cover'
+          }}
+        />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center gap-3">
-              <Database className="h-8 w-8 text-white" />
+              <img src={group764} alt="Logo" className="h-12 w-12" />
               <div>
                 <h1 className="text-2xl font-bold text-white">
                   Sistema de Informação Governamental
@@ -128,6 +133,14 @@ const Index = () => {
         {/* Information Table */}
         <InformationTable records={records} />
       </div>
+
+      {/* PDF Generation Modal */}
+      {showPDFModal && (
+        <PDFGenerationModal 
+          records={records} 
+          onClose={() => setShowPDFModal(false)} 
+        />
+      )}
     </div>
   );
 };
