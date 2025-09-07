@@ -36,6 +36,14 @@ interface InformationRecord {
 
 interface InformationTableProps {
   records: InformationRecord[];
+  filters: {
+    year: string;
+    concelho: string;
+    freguesia: string;
+    area: string;
+    secretaria: string;
+    search: string;
+  };
 }
 
 // Dados detalhados de Machico
@@ -53,14 +61,14 @@ const machicoRecords: InformationRecord[] = [
       createdAt: "2022-01-15",
       updatedAt: "2022-09-20",
       status: "ativo",
-      value: "1.836.017,04 euros",
+      value: "1.836.017,04 €",
       conclusionDate: "2022-09-01",
       attachments: [],
       news: [{
-        title: "Albuquerque entregou 20 apartamentos em Santana ao abrigo do PRR",
-        content: "O presidente do Governo Regional, Miguel Albuquerque, procedeu à entrega das casas do Conjunto Habitacional do Barreiro, em Santana, beneficiando famílias do concelho com 20 novos fogos construídos ao abrigo do Plano de Recuperação e Resiliência (PRR).",
-        link: "https://www.dnoticias.pt/2025/7/28/457670-albuquerque-entregou-20-apartamentos-em-santana-ao-abrigo-do-prr/",
-        date: "2025-07-28"
+        title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+        content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+        link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+        date: "2025-07-30"
       }]
     },
   {
@@ -75,14 +83,14 @@ const machicoRecords: InformationRecord[] = [
     createdAt: "2017-03-10",
     updatedAt: "2017-12-30",
     status: "ativo",
-    value: "505.080 euros",
+    value: "505.080 €",
     conclusionDate: "2017-12-01",
     attachments: [],
     news: [{
-      title: "Albuquerque entregou 20 apartamentos em Santana ao abrigo do PRR",
-      content: "O presidente do Governo Regional, Miguel Albuquerque, procedeu à entrega das casas do Conjunto Habitacional do Barreiro, em Santana, beneficiando famílias do concelho com 20 novos fogos construídos ao abrigo do Plano de Recuperação e Resiliência (PRR).",
-      link: "https://www.dnoticias.pt/2025/7/28/457670-albuquerque-entregou-20-apartamentos-em-santana-ao-abrigo-do-prr/",
-      date: "2025-07-28"
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
     }]
   },
   {
@@ -215,9 +223,53 @@ const getStatusText = (status: string) => {
   }
 };
 
-export function InformationTable({ records }: InformationTableProps) {
+export function InformationTable({ records, filters }: InformationTableProps) {
   const navigate = useNavigate();
+  
+  // Apply filters to all records
+  const filterRecords = (records: InformationRecord[]) => {
+    return records.filter(record => {
+      // Text search
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        if (!record.title.toLowerCase().includes(searchTerm) && 
+            !record.description.toLowerCase().includes(searchTerm)) {
+          return false;
+        }
+      }
+      
+      // Year filter
+      if (filters.year !== "all") {
+        const recordYear = new Date(record.conclusionDate || record.createdAt).getFullYear().toString();
+        if (recordYear !== filters.year) return false;
+      }
+      
+      // Concelho filter
+      if (filters.concelho !== "Todos os Concelhos") {
+        if (record.concelho !== filters.concelho) return false;
+      }
+      
+      // Freguesia filter
+      if (filters.freguesia !== "all") {
+        if (record.freguesia !== filters.freguesia) return false;
+      }
+      
+      // Area filter
+      if (filters.area !== "Todas as Áreas") {
+        if (record.area !== filters.area) return false;
+      }
+      
+      // Secretaria filter
+      if (filters.secretaria !== "Todas as Secretarias") {
+        if (!record.secretaria.includes(filters.secretaria)) return false;
+      }
+      
+      return true;
+    });
+  };
+  
   const allRecords = [...machicoRecords, ...records];
+  const filteredRecords = filterRecords(allRecords);
 
   return (
     <div className="bg-card rounded-lg border shadow-card-soft overflow-hidden">
@@ -232,7 +284,7 @@ export function InformationTable({ records }: InformationTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {allRecords.map((record) => (
+          {filteredRecords.map((record) => (
             <TableRow 
               key={record.id} 
               className="hover:bg-muted/30 cursor-pointer"
@@ -247,7 +299,7 @@ export function InformationTable({ records }: InformationTableProps) {
                       : record.description
                     }
                   </p>
-                  {(record.attachments?.length || record.news?.length) && (
+                  {(record.attachments?.length || record.news?.length) ? (
                     <div className="flex gap-3 mt-2">
                       {record.attachments?.length > 0 && (
                         <div className="flex items-center gap-1 text-xs text-primary">
@@ -255,12 +307,22 @@ export function InformationTable({ records }: InformationTableProps) {
                           <span>{record.attachments.length} anexo(s)</span>
                         </div>
                       )}
-                      {record.news?.length > 0 && (
+                      {record.news?.length > 0 ? (
                         <div className="flex items-center gap-1 text-xs text-primary">
                           <ExternalLink className="h-3 w-3" />
                           <span>{record.news.length} notícia(s)</span>
                         </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <ExternalLink className="h-3 w-3" />
+                          <span>Sem notícias associadas</span>
+                        </div>
                       )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                      <ExternalLink className="h-3 w-3" />
+                      <span>Sem notícias associadas</span>
                     </div>
                   )}
                 </div>
@@ -277,7 +339,7 @@ export function InformationTable({ records }: InformationTableProps) {
                 </div>
               </TableCell>
               <TableCell className="text-sm font-medium">
-                {record.value || "N/A"}
+                {record.value ? record.value.replace(/euros?/gi, '€') : "N/A"}
               </TableCell>
               <TableCell className="text-sm">
                 {record.conclusionDate 

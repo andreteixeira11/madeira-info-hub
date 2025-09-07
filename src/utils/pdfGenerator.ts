@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 interface InformationRecord {
   id: string;
@@ -102,7 +102,7 @@ export function generatePDF(records: InformationRecord[], filters: Filters) {
   ]);
   
   // Create table
-  doc.autoTable({
+  autoTable(doc, {
     head: [['Projeto', 'Área', 'Localização', 'Assessor', 'Valor', 'Conclusão', 'Estado']],
     body: tableData,
     startY: yPos + 20,

@@ -131,7 +131,7 @@ const Index = () => {
         </div>
 
         {/* Information Table */}
-        <InformationTable records={records} />
+        <InformationTable records={records} filters={filters} />
       </div>
 
       {/* PDF Generation Modal */}
