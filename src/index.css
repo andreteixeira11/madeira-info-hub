@@ -37,13 +37,21 @@ All colors MUST be HSL.
     --ring: 213 94% 68%;
 
     /* Government themed colors */
-    --government-blue: 213 94% 68%;
+    --government-blue: 214 100% 36%;
     --government-dark: 216 19% 16%;
     --government-light: 210 40% 98%;
     --government-accent: 142 76% 36%;
     
+    /* Secretaria colors */
+    --secretaria-agricultura: 142 76% 36%;
+    --secretaria-infraestruturas: 214 100% 36%;
+    --secretaria-saude: 0 84% 60%;
+    --secretaria-economia: 45 93% 47%;
+    --secretaria-financas: 271 91% 65%;
+    --secretaria-turismo: 197 71% 52%;
+    
     /* Gradients */
-    --gradient-government: linear-gradient(135deg, hsl(213 94% 68%) 0%, hsl(213 94% 78%) 100%);
+    --gradient-government: linear-gradient(135deg, hsl(214 100% 36%) 0%, hsl(214 100% 46%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(210 40% 98%) 0%, hsl(210 40% 96%) 100%);
     
     /* Shadows */

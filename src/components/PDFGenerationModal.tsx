@@ -24,12 +24,90 @@ export function PDFGenerationModal({ records, onClose }: PDFGenerationModalProps
     search: ""
   });
 
+  // Get freguesias based on selected concelho
+  const getFreguesias = (concelho: string) => {
+    const freguesiaMap: Record<string, string[]> = {
+      "Machico": ["Machico", "Porto da Cruz", "Caniçal", "Santo António da Serra"],
+      "Santana": ["Santana", "Faial", "São Jorge", "Arco de São Jorge", "Ilha"],
+      "Funchal": ["São Pedro", "Santa Maria Maior", "São Martinho", "Santo António", "São Gonçalo", "Imaculado Coração de Maria", "Monte", "São Roque"],
+      "Santa Cruz": ["Santa Cruz", "Gaula", "Camacha", "Caniço"],
+      "Câmara de Lobos": ["Câmara de Lobos", "Estreito de Câmara de Lobos", "Quinta Grande", "Curral das Freiras"]
+    };
+    return freguesiaMap[concelho] || [];
+  };
+
+  const freguesias = filters.concelho !== "Todos os Concelhos" ? getFreguesias(filters.concelho) : [];
+
+  // Filter records based on selected filters
+  const filterRecords = (allRecords: any[]) => {
+    return allRecords.filter(record => {
+      // Text search
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        if (!record.title.toLowerCase().includes(searchTerm) && 
+            !record.description.toLowerCase().includes(searchTerm)) {
+          return false;
+        }
+      }
+      
+      // Year filter
+      if (filters.year !== "all") {
+        const recordYear = new Date(record.conclusionDate || record.createdAt).getFullYear().toString();
+        if (recordYear !== filters.year) return false;
+      }
+      
+      // Concelho filter
+      if (filters.concelho !== "Todos os Concelhos") {
+        if (record.concelho !== filters.concelho) return false;
+      }
+      
+      // Freguesia filter
+      if (filters.freguesia !== "all") {
+        if (record.freguesia !== filters.freguesia) return false;
+      }
+      
+      // Area filter
+      if (filters.area !== "Todas as Áreas") {
+        if (record.area !== filters.area) return false;
+      }
+      
+      // Secretaria filter
+      if (filters.secretaria !== "Todas as Secretarias") {
+        if (!record.secretaria.includes(filters.secretaria)) return false;
+      }
+      
+      return true;
+    });
+  };
+
+  // Include demo data from Machico
+  const machicoRecords = [
+    {
+      id: "demo-1",
+      title: "Requalificação da rede viária regional - zona leste – PAMUS",
+      description: "Requalificação da rede viária regional na zona leste da região, melhorando a conectividade e segurança rodoviária.",
+      area: "Infraestruturas",
+      concelho: "Machico",
+      freguesia: "Machico",
+      assessor: "Eng. Carlos Silva",
+      secretaria: "Secretaria Regional das Infraestruturas",
+      createdAt: "2022-01-15",
+      updatedAt: "2022-09-20",
+      status: "ativo",
+      value: "1.836.017,04 €",
+      conclusionDate: "2022-09-01"
+    }
+  ];
+
+  const allRecords = [...machicoRecords, ...records];
+  const filteredRecords = filterRecords(allRecords);
+
   const handleGeneratePDF = () => {
-    generatePDF(records, filters);
+    generatePDF(filteredRecords, filters);
     
     toast({
       title: "PDF Gerado",
-      description: "O relatório foi gerado e está a ser descarregado.",
+      description: `O relatório foi gerado com ${filteredRecords.length} registos e está a ser descarregado.`,
     });
     
     onClose();
@@ -65,7 +143,7 @@ export function PDFGenerationModal({ records, onClose }: PDFGenerationModalProps
 
           <div className="space-y-2">
             <Label>Concelho</Label>
-            <Select value={filters.concelho} onValueChange={(value) => setFilters(prev => ({ ...prev, concelho: value }))}>
+            <Select value={filters.concelho} onValueChange={(value) => setFilters(prev => ({ ...prev, concelho: value, freguesia: "all" }))}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -85,6 +163,25 @@ export function PDFGenerationModal({ records, onClose }: PDFGenerationModalProps
               </SelectContent>
             </Select>
           </div>
+
+          {freguesias.length > 0 && (
+            <div className="space-y-2">
+              <Label>Freguesia</Label>
+              <Select value={filters.freguesia} onValueChange={(value) => setFilters(prev => ({ ...prev, freguesia: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as Freguesias</SelectItem>
+                  {freguesias.map((freguesia) => (
+                    <SelectItem key={freguesia} value={freguesia}>
+                      {freguesia}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Área</Label>

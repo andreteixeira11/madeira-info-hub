@@ -152,9 +152,9 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={handleClose}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button>
+          <Button onClick={() => setOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Novo Registo
           </Button>
@@ -269,7 +269,7 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="assessor">Assessor *</Label>
+                <Label htmlFor="assessor">Adicionado por: *</Label>
                 <Input
                   id="assessor"
                   value={formData.assessor}
@@ -302,44 +302,44 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
             </div>
 
             {/* Attachments Section */}
-            <div className="space-y-4">
-              <Label className="text-base font-medium">Anexos</Label>
-              <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
-                <div className="flex gap-2">
-                  <Input
-                    type="file"
-                    multiple
-                    onChange={handleFileUpload}
-                    className="flex-1"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
-                  />
-                  <Button type="button" size="sm" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}>
-                    <Upload className="h-4 w-4 mr-1" />
-                    Upload
-                  </Button>
-                </div>
-                
-                {/* Display uploaded files */}
-                {attachments.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Ficheiros anexados:</Label>
-                    {attachments.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-background rounded border">
-                        <span className="text-sm truncate">{file.name}</span>
-                        <Button 
-                          type="button" 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => removeAttachment(index)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+        <div className="space-y-4">
+          <Label className="text-base font-medium">Anexos</Label>
+          <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+            <div className="flex gap-2">
+              <Input
+                type="file"
+                multiple
+                onChange={handleFileUpload}
+                className="flex-1"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+              />
+              <Button type="button" size="sm" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}>
+                <Upload className="h-4 w-4 mr-1" />
+                Upload
+              </Button>
             </div>
+            
+            {/* Display uploaded files */}
+            {attachments.length > 0 && (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Ficheiros anexados:</Label>
+                {attachments.map((file, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-background rounded border">
+                    <span className="text-sm truncate">{file.name}</span>
+                    <Button 
+                      type="button" 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => removeAttachment(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
 
             {/* News Section */}
             <div className="space-y-4">

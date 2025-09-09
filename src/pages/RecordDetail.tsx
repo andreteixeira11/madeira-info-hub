@@ -240,11 +240,7 @@ export default function RecordDetail() {
           <div>
             <h3 className="font-semibold mb-2">Informações do Projeto</h3>
             <div className="space-y-2 text-sm">
-              <div><span className="font-medium">Assessor:</span> {record.assessor}</div>
-              <div><span className="font-medium">Estado:</span> {
-                record.status === 'ativo' ? 'Ativo' : 
-                record.status === 'em_revisao' ? 'Em Revisão' : 'Arquivado'
-              }</div>
+              <div><span className="font-medium">Adicionado por:</span> {record.assessor}</div>
               {record.value && <div><span className="font-medium">Valor:</span> {record.value}</div>}
               {record.conclusionDate && (
                 <div><span className="font-medium">Data de Conclusão:</span> {new Date(record.conclusionDate).toLocaleDateString('pt-PT')}</div>
@@ -256,6 +252,17 @@ export default function RecordDetail() {
             <div className="space-y-2 text-sm">
               <div><span className="font-medium">Criado em:</span> {new Date(record.createdAt).toLocaleDateString('pt-PT')}</div>
               <div><span className="font-medium">Atualizado em:</span> {new Date(record.updatedAt).toLocaleDateString('pt-PT')}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Update History */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-3">Histórico de Atualizações</h2>
+          <div className="space-y-2">
+            <div className="p-3 bg-muted/50 rounded-lg text-sm">
+              <div className="font-medium">Última atualização</div>
+              <div className="text-muted-foreground">{new Date(record.updatedAt).toLocaleDateString('pt-PT')} - Registo criado</div>
             </div>
           </div>
         </div>
