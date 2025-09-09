@@ -69,24 +69,30 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center gap-3">
-              <img src={group764} alt="Logo" className="h-12 w-12" />
-              <div>
-                <h1 className="text-2xl font-bold text-white">
+              <img src={group764} alt="Logo" className="h-8 w-8 sm:h-12 sm:w-12" />
+              <div className="hidden sm:block">
+                <h1 className="font-montserrat text-title text-white">
                   Sistema de Informação Governamental
                 </h1>
-                <p className="text-blue-100">
+                <p className="font-montserrat text-sm text-blue-100">
                   Governo Regional da Madeira
                 </p>
               </div>
+              <div className="block sm:hidden">
+                <h1 className="font-montserrat text-lg font-semibold text-white">
+                  SIG
+                </h1>
+              </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <Button 
                 onClick={handleGeneratePDF}
-                variant="outline"
-                className="bg-white text-primary hover:bg-blue-50 border-white/20"
+                className="bg-button-yellow text-black hover:bg-button-yellow/90 border-0 font-montserrat text-sm sm:text-body"
+                size="sm"
               >
-                <Download className="h-4 w-4 mr-2" />
-                Gerar PDF
+                <Download className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Gerar PDF</span>
+                <span className="sm:hidden">PDF</span>
               </Button>
               <NewRecordModal onAddRecord={handleAddRecord} />
             </div>
@@ -114,18 +120,18 @@ const Index = () => {
         />
 
         {/* Results Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
           <div>
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="font-montserrat text-title text-foreground">
               Informações Registadas
             </h2>
-            <p className="text-muted-foreground">
+            <p className="font-montserrat text-body text-muted-foreground">
               {filters.search || filters.year !== "all" || filters.concelho !== "Todos os Concelhos" || filters.area !== "Todas as Áreas" || filters.secretaria !== "Todas as Secretarias"
                 ? "Resultados filtrados" 
                 : "Todas as informações disponíveis (inclui dados de exemplo de Machico)"}
             </p>
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="font-montserrat text-sm text-muted-foreground">
             {records.length + 8} registos encontrados
           </div>
         </div>

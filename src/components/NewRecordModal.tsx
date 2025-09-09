@@ -154,37 +154,44 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button onClick={() => setOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Registo
+          <Button 
+            onClick={() => setOpen(true)}
+            className="bg-button-blue text-white hover:bg-button-blue/90 border-0 font-montserrat text-sm sm:text-body"
+            size="sm"
+          >
+            <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Novo Registo</span>
+            <span className="sm:hidden">Novo</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Criar Novo Registo</DialogTitle>
+            <DialogTitle className="font-montserrat text-title">Criar Novo Registo</DialogTitle>
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Título *</Label>
+                <Label htmlFor="title" className="font-montserrat text-body">Título *</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   placeholder="Ex: Construção de nova estrada..."
+                  className="font-montserrat"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Descrição *</Label>
+                <Label htmlFor="description" className="font-montserrat text-body">Descrição *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Descreva detalhadamente o projeto..."
+                  className="font-montserrat"
                   rows={4}
                   required
                 />
@@ -192,43 +199,22 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Área *</Label>
+                  <Label className="font-montserrat text-body">Área *</Label>
                   <Select value={formData.area} onValueChange={(value) => setFormData(prev => ({ ...prev, area: value }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="font-montserrat">
                       <SelectValue placeholder="Selecione a área" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Estradas">Estradas</SelectItem>
-                      <SelectItem value="Habitação">Habitação</SelectItem>
-                      <SelectItem value="Educação">Educação</SelectItem>
-                      <SelectItem value="Saúde">Saúde</SelectItem>
-                      <SelectItem value="Obras Marítimas">Obras Marítimas</SelectItem>
-                      <SelectItem value="Água e Resíduos">Água e Resíduos</SelectItem>
-                      <SelectItem value="Florestas">Florestas</SelectItem>
-                      <SelectItem value="Energia">Energia</SelectItem>
-                      <SelectItem value="Social">Social</SelectItem>
-                      <SelectItem value="Agricultura">Agricultura</SelectItem>
-                      <SelectItem value="Mar">Mar</SelectItem>
-                      <SelectItem value="Cultura">Cultura</SelectItem>
-                      <SelectItem value="Segurança">Segurança</SelectItem>
-                    </SelectContent>
+...
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Secretaria *</Label>
+                  <Label className="font-montserrat text-body">Secretaria *</Label>
                   <Select value={formData.secretaria} onValueChange={(value) => setFormData(prev => ({ ...prev, secretaria: value }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="font-montserrat">
                       <SelectValue placeholder="Selecione a secretaria" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Agricultura e Pescas">Agricultura e Pescas</SelectItem>
-                      <SelectItem value="Infraestruturas">Infraestruturas</SelectItem>
-                      <SelectItem value="Saude e Protecao Civil">Saúde e Proteção Civil</SelectItem>
-                      <SelectItem value="Economia">Economia</SelectItem>
-                      <SelectItem value="Finanças">Finanças</SelectItem>
-                      <SelectItem value="Turismo Cultura e Ambiente">Turismo Cultura e Ambiente</SelectItem>
-                    </SelectContent>
+...
                   </Select>
                 </div>
               </div>
@@ -303,17 +289,22 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
 
             {/* Attachments Section */}
         <div className="space-y-4">
-          <Label className="text-base font-medium">Anexos</Label>
+          <Label className="font-montserrat text-title">Anexos</Label>
           <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
             <div className="flex gap-2">
               <Input
                 type="file"
                 multiple
                 onChange={handleFileUpload}
-                className="flex-1"
+                className="flex-1 font-montserrat"
                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
               />
-              <Button type="button" size="sm" onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}>
+              <Button 
+                type="button" 
+                size="sm" 
+                onClick={() => (document.querySelector('input[type="file"]') as HTMLInputElement)?.click()}
+                className="bg-button-red text-white hover:bg-button-red/90 font-montserrat"
+              >
                 <Upload className="h-4 w-4 mr-1" />
                 Upload
               </Button>
@@ -322,10 +313,10 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
             {/* Display uploaded files */}
             {attachments.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Ficheiros anexados:</Label>
+                <Label className="font-montserrat text-sm font-medium">Ficheiros anexados:</Label>
                 {attachments.map((file, index) => (
                   <div key={index} className="flex items-center justify-between p-2 bg-background rounded border">
-                    <span className="text-sm truncate">{file.name}</span>
+                    <span className="font-montserrat text-sm truncate">{file.name}</span>
                     <Button 
                       type="button" 
                       variant="ghost" 

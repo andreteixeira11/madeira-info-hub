@@ -81,13 +81,13 @@ export function FilterBar({
     <div className="bg-card shadow-card-soft rounded-lg mb-6">
       <Accordion type="single" collapsible defaultValue="">
         <AccordionItem value="filters" className="border-none">
-          <AccordionTrigger className="px-6 py-4 hover:no-underline">
+          <AccordionTrigger className="px-4 sm:px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-2">
               <Filter className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-semibold text-foreground">Filtros de Pesquisa</h2>
+              <h2 className="font-montserrat text-title text-foreground">Filtros de Pesquisa</h2>
             </div>
           </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
+          <AccordionContent className="px-4 sm:px-6 pb-6">
             {/* Search */}
             <div className="mb-4">
               <div className="relative">
@@ -96,21 +96,21 @@ export function FilterBar({
                   placeholder="Pesquisar informações..."
                   value={searchTerm}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  className="pl-9"
+                  className="pl-9 font-montserrat"
                 />
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
               {/* Year Filter */}
               <Select value={selectedYear} onValueChange={onYearChange}>
-                <SelectTrigger>
+                <SelectTrigger className="font-montserrat">
                   <SelectValue placeholder="Ano" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os Anos</SelectItem>
                   {years.map((year) => (
-                    <SelectItem key={year} value={year}>
+                    <SelectItem key={year} value={year} className="font-montserrat">
                       {year}
                     </SelectItem>
                   ))}
@@ -119,12 +119,12 @@ export function FilterBar({
 
               {/* Concelho Filter */}
               <Select value={selectedConcelho} onValueChange={onConcelhoChange}>
-                <SelectTrigger>
+                <SelectTrigger className="font-montserrat">
                   <SelectValue placeholder="Concelho" />
                 </SelectTrigger>
                 <SelectContent>
                   {concelhos.map((concelho) => (
-                    <SelectItem key={concelho} value={concelho}>
+                    <SelectItem key={concelho} value={concelho} className="font-montserrat">
                       {concelho}
                     </SelectItem>
                   ))}
@@ -133,12 +133,12 @@ export function FilterBar({
 
               {/* Area Filter */}
               <Select value={selectedArea} onValueChange={onAreaChange}>
-                <SelectTrigger>
+                <SelectTrigger className="font-montserrat">
                   <SelectValue placeholder="Área" />
                 </SelectTrigger>
                 <SelectContent>
                   {areas.map((area) => (
-                    <SelectItem key={area} value={area}>
+                    <SelectItem key={area} value={area} className="font-montserrat">
                       {area}
                     </SelectItem>
                   ))}
@@ -147,12 +147,12 @@ export function FilterBar({
 
               {/* Secretaria Filter */}
               <Select value={selectedSecretaria} onValueChange={onSecretariaChange}>
-                <SelectTrigger>
+                <SelectTrigger className="font-montserrat">
                   <SelectValue placeholder="Secretaria" />
                 </SelectTrigger>
                 <SelectContent>
                   {secretarias.map((secretaria) => (
-                    <SelectItem key={secretaria} value={secretaria}>
+                    <SelectItem key={secretaria} value={secretaria} className="font-montserrat">
                       {secretaria}
                     </SelectItem>
                   ))}
@@ -161,22 +161,23 @@ export function FilterBar({
 
               {/* Freguesia Filter */}
               <Select value={selectedFreguesia} onValueChange={onFreguesiaChange}>
-                <SelectTrigger>
+                <SelectTrigger className="font-montserrat">
                   <SelectValue placeholder="Freguesia" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todas as Freguesias</SelectItem>
-                  <SelectItem value="Machico">Machico</SelectItem>
-                  <SelectItem value="Porto da Cruz">Porto da Cruz</SelectItem>
-                  <SelectItem value="Caniçal">Caniçal</SelectItem>
-                  <SelectItem value="Santo António da Serra">Santo António da Serra</SelectItem>
+                  <SelectItem value="all" className="font-montserrat">Todas as Freguesias</SelectItem>
+                  <SelectItem value="Machico" className="font-montserrat">Machico</SelectItem>
+                  <SelectItem value="Porto da Cruz" className="font-montserrat">Porto da Cruz</SelectItem>
+                  <SelectItem value="Caniçal" className="font-montserrat">Caniçal</SelectItem>
+                  <SelectItem value="Santo António da Serra" className="font-montserrat">Santo António da Serra</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <Button 
                 variant="outline" 
+                className="font-montserrat"
                 onClick={() => {
                   onYearChange("all");
                   onConcelhoChange("Todos os Concelhos");
@@ -189,7 +190,10 @@ export function FilterBar({
                 Limpar Filtros
               </Button>
               
-              <Button onClick={onGeneratePDF} className="bg-government-primary hover:bg-government-primary/90">
+              <Button 
+                onClick={onGeneratePDF} 
+                className="bg-button-yellow text-black hover:bg-button-yellow/90 border-0 font-montserrat"
+              >
                 <FileDown className="h-4 w-4 mr-2" />
                 Gerar PDF
               </Button>

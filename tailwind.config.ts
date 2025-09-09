@@ -18,6 +18,13 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'montserrat': ['Montserrat', 'sans-serif'],
+			},
+			fontSize: {
+				'title': ['20px', { lineHeight: '1.2', fontWeight: '600' }],
+				'body': ['17px', { lineHeight: '1.5', fontWeight: '400' }],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -57,6 +64,11 @@ export default {
 					dark: 'hsl(var(--government-dark))',
 					light: 'hsl(var(--government-light))',
 					accent: 'hsl(var(--government-accent))',
+				},
+				button: {
+					yellow: 'hsl(var(--button-yellow))',
+					blue: 'hsl(var(--button-blue))',
+					red: 'hsl(var(--button-red))',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',

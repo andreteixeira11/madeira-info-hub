@@ -291,87 +291,89 @@ export function InformationTable({ records, filters }: InformationTableProps) {
 
   return (
     <div className="bg-card rounded-lg border shadow-card-soft overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/50">
-            <TableHead className="font-semibold w-[50%]">Projeto</TableHead>
-            <TableHead className="font-semibold">Área</TableHead>
-            <TableHead className="font-semibold">Localização</TableHead>
-            <TableHead className="font-semibold">Valor</TableHead>
-            <TableHead className="font-semibold">Conclusão</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredRecords.map((record) => (
-            <TableRow 
-              key={record.id} 
-              className="hover:bg-muted/30 cursor-pointer"
-              onClick={() => navigate(`/registo/${record.id}`)}
-            >
-              <TableCell className="max-w-xs">
-                <div>
-                  <h4 className="font-semibold text-lg mb-1 line-clamp-2">{record.title}</h4>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {record.description.length > 120 
-                      ? `${record.description.substring(0, 120)}...` 
-                      : record.description
-                    }
-                  </p>
-                  {(record.attachments?.length || record.news?.length) ? (
-                    <div className="flex gap-3 mt-2">
-                      {record.attachments?.length > 0 && (
-                        <div className="flex items-center gap-1 text-xs text-primary">
-                          <Paperclip className="h-3 w-3" />
-                          <span>{record.attachments.length} anexo(s)</span>
-                        </div>
-                      )}
-                      {record.news?.length > 0 ? (
-                        <div className="flex items-center gap-1 text-xs text-primary">
-                          <ExternalLink className="h-3 w-3" />
-                          <span>{record.news.length} notícia(s)</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <ExternalLink className="h-3 w-3" />
-                          <span>Sem notícias associadas</span>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
-                      <ExternalLink className="h-3 w-3" />
-                      <span>Sem notícias associadas</span>
-                    </div>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge 
-                  variant="secondary" 
-                  className={`font-medium ${getAreaColorClass(record.secretaria)}`}
-                >
-                  {record.area}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-sm">
-                <div>
-                  <div className="font-medium">{record.concelho}</div>
-                  <div className="text-muted-foreground">{record.freguesia}</div>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm font-medium">
-                {record.value ? record.value.replace(/euros?/gi, '€') : "N/A"}
-              </TableCell>
-              <TableCell className="text-sm">
-                {record.conclusionDate 
-                  ? new Date(record.conclusionDate).toLocaleDateString('pt-PT')
-                  : "N/A"
-                }
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead className="font-montserrat font-semibold min-w-[300px] sm:w-[50%]">Projeto</TableHead>
+              <TableHead className="font-montserrat font-semibold min-w-[120px]">Área</TableHead>
+              <TableHead className="font-montserrat font-semibold min-w-[150px]">Localização</TableHead>
+              <TableHead className="font-montserrat font-semibold min-w-[100px]">Valor</TableHead>
+              <TableHead className="font-montserrat font-semibold min-w-[120px]">Conclusão</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredRecords.map((record) => (
+              <TableRow 
+                key={record.id} 
+                className="hover:bg-muted/30 cursor-pointer"
+                onClick={() => navigate(`/registo/${record.id}`)}
+              >
+                <TableCell className="max-w-xs">
+                  <div>
+                    <h4 className="font-montserrat text-title mb-1 line-clamp-2">{record.title}</h4>
+                    <p className="font-montserrat text-body text-muted-foreground line-clamp-2">
+                      {record.description.length > 120 
+                        ? `${record.description.substring(0, 120)}...` 
+                        : record.description
+                      }
+                    </p>
+                    {(record.attachments?.length || record.news?.length) ? (
+                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-2">
+                        {record.attachments?.length > 0 && (
+                          <div className="flex items-center gap-1 text-xs text-primary">
+                            <Paperclip className="h-3 w-3" />
+                            <span className="font-montserrat">{record.attachments.length} anexo(s)</span>
+                          </div>
+                        )}
+                        {record.news?.length > 0 ? (
+                          <div className="flex items-center gap-1 text-xs text-primary">
+                            <ExternalLink className="h-3 w-3" />
+                            <span className="font-montserrat">{record.news.length} notícia(s)</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <ExternalLink className="h-3 w-3" />
+                            <span className="font-montserrat">Sem notícias associadas</span>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                        <ExternalLink className="h-3 w-3" />
+                        <span className="font-montserrat">Sem notícias associadas</span>
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge 
+                    variant="secondary" 
+                    className={`font-montserrat font-medium ${getAreaColorClass(record.secretaria)}`}
+                  >
+                    {record.area}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm">
+                  <div>
+                    <div className="font-montserrat font-medium">{record.concelho}</div>
+                    <div className="font-montserrat text-muted-foreground">{record.freguesia}</div>
+                  </div>
+                </TableCell>
+                <TableCell className="font-montserrat text-sm font-medium">
+                  {record.value ? record.value.replace(/euros?/gi, '€') : "N/A"}
+                </TableCell>
+                <TableCell className="font-montserrat text-sm">
+                  {record.conclusionDate 
+                    ? new Date(record.conclusionDate).toLocaleDateString('pt-PT')
+                    : "N/A"
+                  }
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

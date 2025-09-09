@@ -42,6 +42,11 @@ All colors MUST be HSL.
     --government-light: 210 40% 98%;
     --government-accent: 142 76% 36%;
     
+    /* New button colors */
+    --button-yellow: 52 100% 50%;     /* #fde200 */
+    --button-blue: 212 100% 36%;      /* #0066b3 */
+    --button-red: 10 82% 51%;         /* #ea2b19 */
+    
     /* Secretaria colors */
     --secretaria-agricultura: 142 76% 36%;
     --secretaria-infraestruturas: 214 100% 36%;
