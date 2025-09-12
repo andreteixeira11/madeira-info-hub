@@ -152,7 +152,13 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(newOpen) => {
+        if (!newOpen) {
+          handleClose();
+        } else {
+          setOpen(newOpen);
+        }
+      }}>
         <DialogTrigger asChild>
           <Button 
             onClick={() => setOpen(true)}

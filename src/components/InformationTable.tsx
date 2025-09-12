@@ -69,6 +69,11 @@ const machicoRecords: InformationRecord[] = [
         content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
         link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
         date: "2025-07-30"
+      }, {
+        title: "Albuquerque defende estabilidade na Madeira",
+        content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+        link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+        date: "2025-03-19"
       }]
     },
   {
@@ -91,6 +96,11 @@ const machicoRecords: InformationRecord[] = [
       content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
       link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
       date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
     }]
   },
   {
@@ -108,7 +118,17 @@ const machicoRecords: InformationRecord[] = [
     value: "222.367,02 euros",
     conclusionDate: "2017-01-01",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-4",
@@ -125,7 +145,17 @@ const machicoRecords: InformationRecord[] = [
     value: "1.928.307 euros",
     conclusionDate: "2019-10-01",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva", 
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-5",
@@ -142,7 +172,17 @@ const machicoRecords: InformationRecord[] = [
     value: "223.172,12 euros",
     conclusionDate: "2007-04-09",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-6",
@@ -159,7 +199,17 @@ const machicoRecords: InformationRecord[] = [
     value: "50.000 euros",
     conclusionDate: "2017-10-11",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.", 
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-7",
@@ -176,7 +226,17 @@ const machicoRecords: InformationRecord[] = [
     value: "1.300.000 euros", 
     conclusionDate: "2020-01-01",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-8",
@@ -193,7 +253,17 @@ const machicoRecords: InformationRecord[] = [
     value: "100.000 euros",
     conclusionDate: "2019-01-01",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   }
 ];
 
