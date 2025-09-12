@@ -41,7 +41,17 @@ const demoRecords: InformationRecord[] = [
     value: "1.836.017,04 euros",
     conclusionDate: "2022-09-30",
     attachments: [],
-    news: []
+    news: [{
+      title: "Albuquerque defende suspensão do alojamento local em habitação colectiva",
+      content: "Miguel Albuquerque defendeu à margem da inauguração da nova loja Continente Modelo em São Vicente, uma actuação mais firme dos municípios relativamente ao alojamento local, sobretudo em edifícios destinados a habitação permanente.",
+      link: "https://www.dnoticias.pt/2025/7/30/457842-albuquerque-defende-suspensao-do-alojamento-local-em-habitacao-colectiva/",
+      date: "2025-07-30"
+    }, {
+      title: "Albuquerque defende estabilidade na Madeira",
+      content: "O presidente do Governo Regional da Madeira manifestou preocupação com uma eventual instabilidade política na região e destacou a importância de garantir um governo estável para assegurar o crescimento económico e social.",
+      link: "https://www.dnoticias.pt/2025/3/19/442298-albuquerque-defende-estabilidade-na-madeira/",
+      date: "2025-03-19"
+    }]
   },
   {
     id: "machico-2", 
@@ -297,23 +307,34 @@ export default function RecordDetail() {
             <h2 className="text-xl font-semibold mb-3">O que se disse</h2>
             <div className="space-y-4">
               {record.news.map((newsItem, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                  <h3 className="font-medium mb-2">{newsItem.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{newsItem.content}</p>
-                  <div className="flex justify-between items-center text-xs text-muted-foreground">
-                    <span>{new Date(newsItem.date).toLocaleDateString('pt-PT')}</span>
-                    {newsItem.link && (
+                <div key={index} className="p-4 border rounded-lg bg-card">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="font-montserrat text-title text-foreground pr-4">{newsItem.title}</h3>
+                    <div className="text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(newsItem.date).toLocaleDateString('pt-PT')}
+                    </div>
+                  </div>
+                  
+                  <p className="font-montserrat text-description text-muted-foreground mb-3 leading-relaxed">
+                    {newsItem.content}
+                  </p>
+                  
+                  {newsItem.link && (
+                    <div className="flex items-center justify-between pt-2 border-t">
+                      <div className="text-xs text-muted-foreground">
+                        <span className="font-medium">Fonte:</span> {new URL(newsItem.link).hostname}
+                      </div>
                       <a 
                         href={newsItem.link} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
+                        className="text-primary hover:underline flex items-center gap-1 text-sm font-montserrat"
                       >
                         <ExternalLink className="h-3 w-3" />
-                        Ver notícia
+                        Ler notícia completa
                       </a>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
