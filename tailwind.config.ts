@@ -22,8 +22,9 @@ export default {
 				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			fontSize: {
-				'title': ['20px', { lineHeight: '1.2', fontWeight: '600' }],
+				'title': ['18px', { lineHeight: '1.2', fontWeight: '600' }],
 				'body': ['17px', { lineHeight: '1.5', fontWeight: '400' }],
+				'description': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

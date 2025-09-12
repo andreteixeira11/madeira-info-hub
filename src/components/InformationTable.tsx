@@ -312,7 +312,7 @@ export function InformationTable({ records, filters }: InformationTableProps) {
                 <TableCell className="max-w-xs">
                   <div>
                     <h4 className="font-montserrat text-title mb-1 line-clamp-2">{record.title}</h4>
-                    <p className="font-montserrat text-body text-muted-foreground line-clamp-2">
+                    <p className="font-montserrat text-description text-muted-foreground line-clamp-2 text-left">
                       {record.description.length > 120 
                         ? `${record.description.substring(0, 120)}...` 
                         : record.description

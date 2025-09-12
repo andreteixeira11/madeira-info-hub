@@ -156,7 +156,7 @@ export function NewRecordModal({ onAddRecord }: NewRecordModalProps) {
         <DialogTrigger asChild>
           <Button 
             onClick={() => setOpen(true)}
-            className="bg-button-blue text-white hover:bg-button-blue/90 border-0 font-montserrat text-sm sm:text-body"
+            className="bg-button-blue text-white hover:bg-button-blue/95 hover:shadow-lg border border-blue-200/30 hover:border-blue-300 transition-all duration-300 font-montserrat text-sm sm:text-body rounded-lg px-4 py-2.5 shadow-md backdrop-blur-sm"
             size="sm"
           >
             <Plus className="h-4 w-4 mr-1 sm:mr-2" />

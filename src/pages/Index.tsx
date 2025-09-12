@@ -84,10 +84,10 @@ const Index = () => {
                 </h1>
               </div>
             </div>
-            <div className="flex gap-2 sm:gap-3">
+            <div className="flex gap-3">
               <Button 
                 onClick={handleGeneratePDF}
-                className="bg-button-yellow text-black hover:bg-button-yellow/90 border-0 font-montserrat text-sm sm:text-body"
+                className="bg-button-yellow text-black hover:bg-button-yellow/95 hover:shadow-lg border border-yellow-200/30 hover:border-yellow-300 transition-all duration-300 font-montserrat text-sm sm:text-body rounded-lg px-4 py-2.5 shadow-md backdrop-blur-sm"
                 size="sm"
               >
                 <Download className="h-4 w-4 mr-1 sm:mr-2" />
